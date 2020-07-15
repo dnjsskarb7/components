@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 
-import Accordion from "./components/Accordion";
-import Search from "./components/Search";
-import Dropdown from "./components/Dropdown";
-import Translate from "./components/Translate";
 import Header from "./components/Header";
 import "./styles.css";
+
+const Accordion = lazy(() => import("./components/Accordion"));
+const Search = lazy(() => import("./components/Search"));
+const Dropdown = lazy(() => import("./components/Dropdown"));
+const Translate = lazy(() => import("./components/Translate"));
+
 // for Search component
 
 const items = [
@@ -45,30 +47,32 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="App">
-        <Header />
-        <Route
-          exact
-          path="/"
-          render={(props) => <Accordion {...props} items={items} />}
-        />
-        <Route
-          exact
-          path="/dropdown"
-          render={(props) => (
-            <Dropdown
-              {...props}
-              options={options}
-              selected={selected}
-              onSelectedChange={setSelected}
-            />
-          )}
-        />
-        <Route
-          exact
-          path="/translate"
-          render={(props) => <Translate {...props}  />}
-        />
-        <Route exact path="/list" render={(props) => <Search {...props} />} />
+        <Suspense fallback={<div>Loading...Coding Split</div>}>
+          <Header />
+          <Route
+            exact
+            path="/"
+            render={(props) => <Accordion {...props} items={items} />}
+          />
+          <Route
+            exact
+            path="/dropdown"
+            render={(props) => (
+              <Dropdown
+                {...props}
+                options={options}
+                selected={selected}
+                onSelectedChange={setSelected}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/translate"
+            render={(props) => <Translate {...props} />}
+          />
+          <Route exact path="/list" render={(props) => <Search {...props} />} />
+        </Suspense>
       </div>
     </BrowserRouter>
   );
